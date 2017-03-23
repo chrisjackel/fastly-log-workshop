@@ -2,9 +2,10 @@
 Code samples for Altitude NYC 2017
 
 
---- Useful things to log ---
+## Useful things to log
 
 
+```
 resp.http.Set-Cookie
 server.datacenter
 server.identity
@@ -18,25 +19,29 @@ geoip.continent_code
 geoip.country_code
 geoip.region (code for region within country)
 req.restarts
+```
 
--- Img prefix selector from UI ---
+--- Img prefix selector from UI ---
 
---- Examples of different prefixes ---
+## Examples of different prefixes
 
-<134>2017-03-19T13:13:33Z cache-jfk8147 foobarlogs2[453796]: {"client_ip":"207.237.138.218","req_url":"/"}
-<134>1 2017-03-19T13:13:33Z cache-jfk8147 - 453796 foobarlogs2 - {"client_ip":"207.237.138.218","req_url":"/"}
-114 <134>1 2017-03-19T13:13:33+00:00 cache-jfk8147 - 453796 foobarlogs2 - {"client_ip":"207.237.138.218","req_url":"/"}
-{"client_ip":"207.237.138.218","req_url":"/"}
+`<134>2017-03-19T13:13:33Z cache-jfk8147 foobarlogs2[453796]: {"client_ip":"207.237.0.218","req_url":"/"}`
+`<134>1 2017-03-19T13:13:33Z cache-jfk8147 - 453796 foobarlogs2 - {"client_ip":"207.237.138.218","req_url":"/"}`
+`114 <134>1 2017-03-19T13:13:33+00:00 cache-jfk8147 - 453796 foobarlogs2 - {"client_ip":"207.237.138.218","req_url":"/"}`
+`{"client_ip":"207.237.138.218","req_url":"/"}`
 
 --- JSON logs
 
 Sample hand-coded (set prefix to 'blank')
 
+```
 log "syslog 60idOs66l4AbzuqvgBypS2 foobar logs :: 
 {"
   {""client_ip":""}    client.ip   {"","}
   {""req_url":""}      req.url     {"""}
 "}";
+
+```
 
 Better still, use
 
@@ -45,29 +50,32 @@ https://github.com/fastly/vcl-json-generate
 
 
 
---- Conditional Logging
+## Conditional Logging
 
-Only log errors
+###Only log errors
 
+```
 if (beresp.status == 500 || beresp.status == 503) {
      log {"syslog …etc… "};
 } 
+```
 
-Random sample of logs
+###Random sample of logs
 
+```
 if (randombool(std.atoi(table.lookup(logging, "percentage"))), 100) {
     log {"syslog <service_ID> <endpoint-name> :: "} var.logstr;
 }
+```
 
+Then, to modify the dictionary item, use the edge dictionary API
 
+```curl -X PATCH -H "Fastly-Key: <api_token>" -d "item_value=5" "https://api.fastly.com/service/<service_id>/dictionary/<dict_id>/item/percentage"
+```
 
-curl -X PATCH -H "Fastly-Key: <api_token>" -d "item_value=5" "https://api.fastly.com/service/<service_id>/dictionary/<dict_id>/item/percentage"
+###Only log specific URLs (via dictionary)
 
-
-
-
-Only log specific URLs (via dictionary)
-
+```
  table panic_mode_logging {
 “/my_broken_url” : “1”
 }
@@ -75,10 +83,12 @@ Only log specific URLs (via dictionary)
 if (table.lookup(panic_mode_logging, req.url)) {
    log syslog 4rqBj4oy1YChTPgdapiWS4 gcs-test :: 
 }
+```
 
 
-Shard across multiple endpoints
+###Shard across multiple endpoints
 
+```
   declare local var.logstr STRING;
 
   set var.logstr = …;
@@ -95,6 +105,7 @@ Shard across multiple endpoints
   } else { /* only "4" left */
     log {"syslog 4rqBj4oy1YChTPgdapiWS4 gcs-test4 :: "} var.logstr;
   }
+  ```
   
   
   
