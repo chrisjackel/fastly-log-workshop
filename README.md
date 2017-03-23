@@ -4,7 +4,6 @@ Code samples for Altitude NYC 2017
 
 ## Useful things to log
 
-
 ```
 resp.http.Set-Cookie
 server.datacenter
@@ -70,7 +69,8 @@ if (randombool(std.atoi(table.lookup(logging, "percentage"))), 100) {
 
 Then, to modify the dictionary item, use the edge dictionary API
 
-```curl -X PATCH -H "Fastly-Key: <api_token>" -d "item_value=5" "https://api.fastly.com/service/<service_id>/dictionary/<dict_id>/item/percentage"
+```
+curl -X PATCH -H "Fastly-Key: <api_token>" -d "item_value=5" "https://api.fastly.com/service/<service_id>/dictionary/<dict_id>/item/percentage"
 ```
 
 ### Only log specific URLs (via dictionary)
