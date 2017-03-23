@@ -52,7 +52,7 @@ https://github.com/fastly/vcl-json-generate
 
 ## Conditional Logging
 
-###Only log errors
+### Only log errors
 
 ```
 if (beresp.status == 500 || beresp.status == 503) {
@@ -60,7 +60,7 @@ if (beresp.status == 500 || beresp.status == 503) {
 } 
 ```
 
-###Random sample of logs
+### Random sample of logs
 
 ```
 if (randombool(std.atoi(table.lookup(logging, "percentage"))), 100) {
@@ -73,7 +73,7 @@ Then, to modify the dictionary item, use the edge dictionary API
 ```curl -X PATCH -H "Fastly-Key: <api_token>" -d "item_value=5" "https://api.fastly.com/service/<service_id>/dictionary/<dict_id>/item/percentage"
 ```
 
-###Only log specific URLs (via dictionary)
+### Only log specific URLs (via dictionary)
 
 ```
  table panic_mode_logging {
@@ -86,7 +86,7 @@ if (table.lookup(panic_mode_logging, req.url)) {
 ```
 
 
-###Shard across multiple endpoints
+### Shard across multiple endpoints
 
 ```
   declare local var.logstr STRING;
